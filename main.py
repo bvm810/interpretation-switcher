@@ -2,28 +2,30 @@
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 
-class MainWindow(Screen):
-    filename = ObjectProperty(None)
 
-class WindowManager(ScreenManager):
-    pass
+root = Builder.load_file("./switcher.kv") # Loads GUI background and basic displays
 
-kv = Builder.load_file("switcher.kv")
-sm = WindowManager()
+# Creates a box layout on the left-hand side to house the song progress bars
+songbox = BoxLayout(
+    orientation = "vertical",
+    size_hint=(0.3, 0.8),
+    pos_hint={'x': 0.0, 'y': 0.2})
 
-screens = [MainWindow(name="main")]
+# Creates a box on the right hand side to house the music sheet image
+sheetbox = BoxLayout(
+    orientation = "vertical",
+    size_hint=(0.7, 0.8),
+    pos_hint={'x': 0.3, 'y': 0.2})
 
-for screen in screens:
-    sm.add_widget(screen)
+root.add_widget(songbox)
 
-sm.current = "main"
+class MainApp(App):
 
-class MyMainApp(App):
     def build(self):
-        return sm
+        return root
 
-if __name__ == "__main__":
-    MyMainApp().run()
+if __name__ == '__main__':
+    MainApp().run()

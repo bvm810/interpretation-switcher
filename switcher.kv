@@ -1,34 +1,33 @@
 # kv file for rendering interpretation switcher windows
+# Responsible for creating basic GUI that is displayed at all times
 
-<MainWindow>:
+FloatLayout:
 
-    FloatLayout:
+    Label:
+        pos_hint:{"x":0.0, "y": 0.0}
+        size_hint:0.15,0.05
+        text: "Interpretation"
 
-        Label:
-            pos_hint:{"x":0.0, "y": 0.0}
-            size_hint:0.15,0.05
-            text: "Interpretation"
+    Button:
+        pos_hint:{"x":0.25, "y": 0.0}
+        size_hint:0.05,0.05
+        text: "+"
 
-        Button:
-            pos_hint:{"x":0.25, "y": 0.0}
-            size_hint:0.05,0.05
-            text: "+"
+    Widget:
+        pos_hint:{"x":0.3, "y": 0.0}
+        size_hint:0.001,1
+        canvas:
+            Color:
+                rgba: 1,1,1,1
+            Line:
+                rectangle: (self.x, self.y, self.width, self.height)
 
-        Widget:
-            pos_hint:{"x":0.3, "y": 0.0}
-            size_hint:0.001,1
-            canvas:
-                Color:
-                    rgba: 1,1,1,1
-                Line:
-                    rectangle: (self.x, self.y, self.width, self.height)
+    Label:
+        pos_hint:{"x":0.3, "y": 0.0}
+        size_hint:0.15,0.05
+        text: "Music Sheet"
 
-        Label:
-            pos_hint:{"x":0.302, "y": 0.0}
-            size_hint:0.15,0.05
-            text: "Music Sheet"
-
-        Button:
-            pos_hint:{"x":0.95, "y": 0.0}
-            size_hint:0.05,0.05
-            text: "+"
+    Button:
+        pos_hint:{"x":0.95, "y": 0.0}
+        size_hint:0.05,0.05
+        text: "+"
