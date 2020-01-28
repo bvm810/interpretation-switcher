@@ -1,9 +1,6 @@
 # kv file for rendering interpretation switcher windows
 # Responsible for creating basic GUI that is displayed at all times
 
-<SvgWidget>:
-    do_rotation: False
-
 <SongboxWidget>:
     BoxLayout:
         orientation: "vertical"
@@ -11,6 +8,12 @@
 <SheetboxWidget>:
     BoxLayout:
         orientation: "vertical"
+
+        Image:
+            source:"Chopin Prelude Op. 28 No. 7.png"
+            allow_stretch: True
+            keep_ratio: False
+
 
 <BackgroundWidget>:
     FloatLayout:

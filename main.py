@@ -6,6 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics.svg import Svg
 from kivy.uix.scatter import Scatter
+from kivy.uix.image import Image
 
 
 Builder.load_file("./switcher.kv")
@@ -19,21 +20,11 @@ class SongboxWidget(BoxLayout):
 class SheetboxWidget(BoxLayout):
     pass
 
-class SvgWidget(Scatter):
-
-    def __init__(self, filename, **kwargs):
-        super(SvgWidget, self).__init__(**kwargs)
-        with self.canvas:
-            svg = Svg(filename)
-        self.size = svg.width, svg.height
-
 
 #BACKEND MAGIC
 root = BackgroundWidget()
-songbox = SongboxWidget(size_hint= (0.3, 0.8),pos_hint={"x":0.0, "y": 0.2})
-sheetbox = SheetboxWidget(size_hint= (0.7, 0.8),pos_hint={"x":0.3, "y": 0.2})
-
-
+songbox = SongboxWidget(size_hint= (0.3, 0.9),pos_hint={"x":0.0, "y": 0.1})
+sheetbox = SheetboxWidget(size_hint= (0.7, 0.9),pos_hint={"x":0.3, "y": 0.1})
 
 root.add_widget(songbox)
 root.add_widget(sheetbox)
