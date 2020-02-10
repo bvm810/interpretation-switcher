@@ -2,6 +2,7 @@ from librosa.feature import chroma_stft
 
 def chroma(audio, fs, norm = 2, n_fft = 4096, hop_length = 2048, win_length = 4096, window = 'hamming', center = False):
     """
+    Function for extracting chroma features using librosa implementation
 
     :param: Same as in librosa. See librosa.feature.chroma_stft for details.
     :return: Chroma features for each window in matrix form
@@ -24,7 +25,7 @@ def chroma(audio, fs, norm = 2, n_fft = 4096, hop_length = 2048, win_length = 40
 # from setup import load_file
 #
 #
-# x, fs = load_file('Piano C Major Scale.wav')
+# x, fs = load_file('Chopin Prelude Op. 28 No. 7 MIDI.wav')
 # chromagram = chroma(x, fs)
 #
 # plt.figure(figsize = (8,4))
