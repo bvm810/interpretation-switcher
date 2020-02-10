@@ -4,9 +4,6 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
-from kivy.graphics.svg import Svg
-from kivy.uix.scatter import Scatter
-from kivy.uix.image import Image
 
 
 Builder.load_file("./switcher.kv")
