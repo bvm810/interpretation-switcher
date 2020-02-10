@@ -12,12 +12,13 @@ def load_file(filename):
     return y, sr
 
 
-# Test plotting
-from librosa.display import waveplot
-import matplotlib.pyplot as plt
-
-x, fs = load_file('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
-plt.figure(figsize=(16, 4))
-waveplot(x, sr=fs)
-plt.title('Test Plot $X$')
-plt.tight_layout()
+# # Test plotting
+# from librosa.display import waveplot
+# import matplotlib.pyplot as plt
+#
+# x, fs = load_file('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
+# plt.figure(figsize=(16, 4))
+# waveplot(x, sr=fs)
+# plt.title('Test Plot $X$')
+# plt.tight_layout()
+# plt.show()
