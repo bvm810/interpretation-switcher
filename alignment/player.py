@@ -6,23 +6,19 @@ from pynput import keyboard
 def audioplayer(filename):
     paused = False    # nonlocal to track if the audio is paused
 
-    # def pause(key):
-    #     nonlocal paused
-    #     print (key)
-    #     if key == keyboard.Key.space:
-    #         if stream.is_stopped():     # time to play audio
-    #             print ('play pressed')
-    #             stream.start_stream()
-    #             paused = False
-    #
-    #         elif stream.is_active():   # time to pause audio
-    #             print ('pause pressed')
-    #             stream.stop_stream()
-    #             paused = True
+    def pause(key):
+        nonlocal paused
+        print (key)
+        if key == keyboard.Key.space:
+            if stream.is_stopped():     # time to play audio
+                print ('play pressed')
+                stream.start_stream()
+                paused = False
 
-    def on_press(key):
-        print('{0} pressed'.format(key))
-
+            elif stream.is_active():   # time to pause audio
+                print ('pause pressed')
+                stream.stop_stream()
+                paused = True
 
     wf = wave.open('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/alignment/'+filename, 'rb')
     p = pyaudio.PyAudio()
@@ -39,7 +35,7 @@ def audioplayer(filename):
 
     stream.start_stream()
     while stream.is_active() or paused==True:
-        with keyboard.Listener(on_press=on_press) as listener:
+        with keyboard.Listener(on_press=pause) as listener:
             listener.join()
         time.sleep(0.1)
 
