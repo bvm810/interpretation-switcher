@@ -1,9 +1,6 @@
 from librosa.sequence import dtw
 import numpy as np
 
-
-# Fix chroma feature extraction to avoid NaN problem in DTW !
-
 def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weights_add = None, weights_mul = None, global_constraints = False, band_rad = 0.25):
     """
     Function for aligning using DTW implementation by librosa. All arguments are the same except step_sizes and weights
@@ -51,14 +48,14 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
 # audio1 = chroma(x, fs)
 # audio2 = chroma(y, fs)
 #
-# D, wp = dtw_align(audio1, audio2, metric = 'euclidean')
+# D, wp = dtw_align(audio1, audio2)
 # wp_s = np.asarray(wp) * 2048/fs
 #
 # fig = plt.figure(figsize=(6,6))
 # ax = fig.add_subplot(1,1,1)
 # specshow(D, x_axis='s', y_axis='s', cmap='gray_r', sr = fs, hop_length=2048)
 # imax = ax.imshow(D, cmap=plt.get_cmap('gray_r'), origin='lower', interpolation='nearest', aspect='auto')
-# ax.plot(wp_s[:, 1], wp_s[:, 0], marker='o', color='r')
+# ax.plot(wp_s[:, 1], wp_s[:, 0], color='r', marker='o', markersize = 1)
 # plt.title('Warping Path on Acc. Cost Matrix $D$')
 # plt.colorbar()
 # plt.show()
