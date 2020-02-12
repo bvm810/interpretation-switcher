@@ -21,8 +21,8 @@ class AudioPlayer():
         self.stream.start_stream()
         self.is_playing = True
 
-        # while self.stream.is_active():
-        #     time.sleep(0.1)
+        while self.stream.is_active():
+            time.sleep(0.1)
 
     def pause(self):
         self.stream.stop_stream()
@@ -42,4 +42,5 @@ a = AudioPlayer('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
 a.play()
 time.sleep(5)
 a.pause()
+time.sleep(2)
 a.play()
