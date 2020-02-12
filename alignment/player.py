@@ -1,27 +1,45 @@
-from pygame import mixer as mix
+import pyaudio
+import wave
 import time
 
-def init_audioplayer(filelist, frequency = 44100, size = -16, channels = 2, buffer = 512):
-    """
-    Function for initializing pygame's mixer module with the desired wav files in its channels.
+class AudioPlayer():
 
-    :param filelist: List of strings with filenames of audiofiles to be aligned
-    :return channel_list: List of Channel objects tuples to be manipulated with play/pause
-    """
-    mix.init(frequency=frequency, size=size, channels=channels, buffer=buffer)
-    channel_list = []
-    for name in filelist:
-        sound = mix.Sound(name)
-        channel = mix.Channel(filelist.index(name))
-        channel.play(sound)
-        channel.pause()
-        channel_list.append(channel)
-    return channel_list
+    def __init__(self, filename):
+        self.is_playing = False
+        self.currentSample = 0
+        self.file = wave.open(filename, 'rb')
 
-# Test
-filenames = ['Chopin Prelude Op. 28 No. 7 M. Pollini.wav', 'Chopin Prelude Op. 28 No. 7 MIDI.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav']
-channel_list = init_audioplayer(filenames)
-for channel in channel_list:
-    channel.unpause()
-    time.sleep(10)
-    channel.pause()
+        self.p = pyaudio.PyAudio()
+
+        self.stream = self.p.open(format=self.p.get_format_from_width(self.file.getsampwidth()),
+                channels=self.file.getnchannels(),
+                rate=self.file.getframerate(),
+                output=True,
+                stream_callback=self.callback)
+
+    def play(self):
+        self.stream.start_stream()
+        self.is_playing = True
+
+        # while self.stream.is_active():
+        #     time.sleep(0.1)
+
+    def pause(self):
+        self.stream.stop_stream()
+        self.is_playing = False
+
+        # self.stream.close()
+        # self.file.close()
+        #
+        # self.p.terminate()
+
+
+    def callback(self, in_data, frame_count, time_info, status):
+        data = self.file.readframes(frame_count)
+        return (data, pyaudio.paContinue)
+
+a = AudioPlayer('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
+a.play()
+time.sleep(5)
+a.pause()
+a.play()
