@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.clock import Clock
+from kivy.core.window import Window
 
 class PlayerWidget(Widget):
     """
@@ -16,7 +17,6 @@ class PlayerWidget(Widget):
         self.currentSample = 0 # Attribute to save current sample of audio
         self.chunk = 1024 # Number of samples to read at each callback
         self.file = wave.open(filename, 'rb') # .wav file
-
         self.p = pyaudio.PyAudio() # PyAudio player object
 
         # PyAudio Stream object
@@ -26,24 +26,7 @@ class PlayerWidget(Widget):
                 output=True)
 
         # Use of Kivy clock to schedule callbacks
-        Clock.schedule_interval(self.callback, (self.chunk/self.file.getframerate())/2)
-
-        # Widget buttons
-        play_button = Button(text = 'play', pos=(0,0), size=(100,100))
-        pause_button = Button(text = 'pause', pos=(0,150), size = (100,100))
-        getpos_button = Button(text = 'get_time', pos=(150,0), size = (100,100))
-        rewind_button = Button(text = 'rewind', pos=(150,150), size = (100,100))
-
-        self.add_widget(play_button)
-        self.add_widget(pause_button)
-        self.add_widget(getpos_button)
-        self.add_widget(rewind_button)
-
-        aux_fun = lambda : self.set_pos(1349632)
-        play_button.on_press = self.play
-        pause_button.on_press = self.pause
-        getpos_button.on_press = self.get_sample
-        rewind_button.on_press = aux_fun
+        self.clock = Clock.schedule_interval(self.callback, (self.chunk/self.file.getframerate())/2)
 
     # Method for playing
     def play(self):
@@ -58,7 +41,7 @@ class PlayerWidget(Widget):
         self.currentSample = self.file.tell()
         print(self.currentSample)
 
-    #Method for going to a specific audio sample
+    # Method for going to a specific audio sample
     def set_pos(self, pos):
         self.file.setpos(pos)
         self.currentSample = pos
@@ -72,11 +55,42 @@ class PlayerWidget(Widget):
                 self.is_playing = False
             self.stream.write(data)
 
+    def close(self):
+        Clock.unschedule(self.clock)
+        self.stream.stop_stream()
+        self.stream.close()
+        self.p.terminate()
 
-class TestApp(App):
-    def build(self):
-        player = PlayerWidget('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
-        return player
 
-if __name__ == '__main__':
-    TestApp().run()
+# class TestApp(App):
+#     def build(self):
+#         self.player = PlayerWidget('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
+#         Window.bind(on_request_close=self.on_request_close)
+#
+#         # Widget buttons
+#         play_button = Button(text = 'play', pos=(0,0), size=(100,100))
+#         pause_button = Button(text = 'pause', pos=(0,150), size = (100,100))
+#         getpos_button = Button(text = 'get_time', pos=(150,0), size = (100,100))
+#         rewind_button = Button(text = 'rewind', pos=(150,150), size = (100,100))
+#
+#         self.player.add_widget(play_button)
+#         self.player.add_widget(pause_button)
+#         self.player.add_widget(getpos_button)
+#         self.player.add_widget(rewind_button)
+#
+#         aux_fun = lambda: self.player.set_pos(1345536)
+#         play_button.on_press = self.player.play
+#         pause_button.on_press = self.player.pause
+#         getpos_button.on_press = self.player.get_sample
+#         rewind_button.on_press = aux_fun
+#
+#         return self.player
+#
+#     def on_request_close(self, *args):
+#         self.player.close()
+#         Window.close()
+#         return True
+#
+# if __name__ == '__main__':
+#     TestApp().run()
+
