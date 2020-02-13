@@ -1,4 +1,4 @@
-# Main python file for creating the GUI using the kv file switcher.kv
+# Main python file for creating the GUI using the kv file main.kv
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -6,7 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 
 
-Builder.load_file("./switcher.kv")
+Builder.load_file("./main.kv")
 
 class BackgroundWidget(FloatLayout):
     pass

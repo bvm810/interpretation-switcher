@@ -1,4 +1,6 @@
 from librosa.sequence import dtw
+from setup import load_file
+from feature_extraction import chroma
 import numpy as np
 
 def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weights_add = None, weights_mul = None, global_constraints = False, band_rad = 0.25):
@@ -9,7 +11,7 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
     :param step_sizes_sigma: List of possible step sizes. Indicates which previous cells of D to use when dynamically calculating new cells of D
     :param weights_add: List of additive weights for each of the step_sizes
     :param weights_mul: List of multiplicative weights for each of the step sizes
-    :return:
+    :return D, wp: Cost matrix and warping path
     """
     if step_sizes_sigma is None:
         step_sizes_sigma = np.asarray([(1,1), (1,0), (0,1)])
@@ -29,6 +31,38 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
                 global_constraints = global_constraints,
                 band_rad = band_rad)
     return D, wp
+
+def warp(filename1, filename2):
+    """
+    Function for obtaining warping path based only on filenames
+    OBS: Still does not support hange in parameters for chroma and dtw_align
+    :param filename1: filename of first audio
+    :param filename2: filename of second audio
+    :return wp: warping path
+    """
+    x, fs_x = load_file(filename1)
+    y, fs_y = load_file(filename2)
+
+    if fs_x != fs_y:
+        return None
+
+    fs = fs_x
+    audio1 = chroma(x, fs)
+    audio2 = chroma(y, fs)
+
+    wp = dtw_align(audio1, audio2)[1]
+    return wp
+
+def align_audios(audios):
+    """
+    Function for aligning several audio files
+    :param audios: list with filenames for the audios
+    :return warp_dict: dict with tuple of filename pair as key and warping path as value
+    """
+
+    # for audio_i in audios:
+    #     for audio_j in audios:
+    #
 
 # # Test plotting
 # from librosa.display import specshow

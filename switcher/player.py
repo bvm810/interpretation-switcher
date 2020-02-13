@@ -16,6 +16,7 @@ class PlayerWidget(Widget):
         self.is_playing = False # Flag to see if it is playing
         self.currentSample = 0 # Attribute to save current sample of audio
         self.chunk = 1024 # Number of samples to read at each callback
+        self.filename = filename
         self.file = wave.open(filename, 'rb') # .wav file
         self.p = pyaudio.PyAudio() # PyAudio player object
 
