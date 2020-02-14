@@ -32,39 +32,7 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
                 band_rad = band_rad)
     return D, wp
 
-def warp(filename1, filename2):
-    """
-    Function for obtaining warping path based only on filenames
-    OBS: Still does not support hange in parameters for chroma and dtw_align
-    :param filename1: filename of first audio
-    :param filename2: filename of second audio
-    :return wp: warping path
-    """
-    x, fs_x = load_file(filename1)
-    y, fs_y = load_file(filename2)
-
-    if fs_x != fs_y:
-        return None
-
-    fs = fs_x
-    audio1 = chroma(x, fs)
-    audio2 = chroma(y, fs)
-
-    wp = dtw_align(audio1, audio2)[1]
-    return wp
-
-def align_audios(audios):
-    """
-    Function for aligning several audio files
-    :param audios: list with filenames for the audios
-    :return warp_dict: dict with tuple of filename pair as key and warping path as value
-    """
-
-    # for audio_i in audios:
-    #     for audio_j in audios:
-    #
-
-# # Test plotting
+# # Test plotting for dtw_align
 # from librosa.display import specshow
 # import matplotlib.pyplot as plt
 # from setup import load_file
@@ -93,3 +61,55 @@ def align_audios(audios):
 # plt.title('Warping Path on Acc. Cost Matrix $D$')
 # plt.colorbar()
 # plt.show()
+
+def warp(filename1, filename2):
+    """
+    Function for obtaining warping path based only on filenames
+    OBS: Still does not support hange in parameters for chroma and dtw_align
+    :param filename1: filename of first audio
+    :param filename2: filename of second audio
+    :return wp: warping path
+    """
+    x, fs_x = load_file(filename1)
+    y, fs_y = load_file(filename2)
+
+    if fs_x != fs_y:
+        return None
+
+    fs = fs_x
+    audio1 = chroma(x, fs)
+    audio2 = chroma(y, fs)
+
+    wp = dtw_align(audio1, audio2)[1]
+    return wp
+
+def align_audios(audios):
+    """
+    Function for aligning several audio files
+    :param audios: list with filenames for the audios
+    :return warp_dict: dict with tuple of indexes as key and warping path as value
+    """
+    warp_dict = {}
+    for audio_i in audios:
+        for audio_j in audios:
+            ij_key = (audios.index(audio_i),audios.index(audio_j))
+            ji_key = (audios.index(audio_j),audios.index(audio_i))
+            if (audio_i != audio_j) and (ij_key not in warp_dict) and (ji_key not in warp_dict):
+                wp = warp(audio_i, audio_j)
+                warp_dict[(audios.index(audio_i),audios.index(audio_j))] = wp
+                warp_dict[(audios.index(audio_j),audios.index(audio_i))] = np.column_stack((wp[:,1],wp[:,0]))
+
+    return warp_dict
+
+
+# Testing for warp_dict
+# warp_dict = align_audios(['Chopin Prelude Op. 28 No. 7 MIDI.wav', 'Chopin Prelude Op. 28 No. 7 M. Pollini.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav'])
+# works = True
+# for key in warp_dict:
+#     if not np.array_equal(warp_dict[(key[0], key[1])][:,0], warp_dict[(key[1], key[0])][:,1]):
+#         works = False
+#     if not np.array_equal(warp_dict[(key[0], key[1])][:,1], warp_dict[(key[1], key[0])][:,0]):
+#         works = False
+#
+# print(works)
+

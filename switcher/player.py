@@ -40,12 +40,23 @@ class PlayerWidget(Widget):
     # Method for getting current audio sample
     def get_sample(self):
         self.currentSample = self.file.tell()
-        print(self.currentSample)
+        return self.currentSample
+
+    # Method for getting current audio frame
+    def get_frame(self, hop_size = 2048):
+        frame = int(round(self.get_sample()/hop_size))
+        return frame
 
     # Method for going to a specific audio sample
     def set_pos(self, pos):
         self.file.setpos(pos)
         self.currentSample = pos
+
+    def set_frame(self, frame, hop_size = 2048, center = False):
+        if center == False:
+            self.set_pos(hop_size * frame)
+        else:
+            self.set_pos(hop_size * frame + round(hop_size/2))
 
     # Method for reading self.chunk samples at a time. It is called regularly by the kivy digital clock
     def callback(self, dt):
