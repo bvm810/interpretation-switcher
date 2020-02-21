@@ -3,33 +3,31 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.boxlayout import BoxLayout
+from switcher.switcher import SwitcherLayout
+from kivy.core.window import Window
 
 
 Builder.load_file("./main.kv")
 
-class BackgroundWidget(FloatLayout):
+class Background(FloatLayout):
     pass
-
-class SongboxWidget(BoxLayout):
-    pass
-
-class SheetboxWidget(BoxLayout):
-    pass
-
-
-#BACKEND MAGIC
-root = BackgroundWidget()
-songbox = SongboxWidget(size_hint= (0.3, 0.9),pos_hint={"x":0.0, "y": 0.1})
-sheetbox = SheetboxWidget(size_hint= (0.7, 0.9),pos_hint={"x":0.3, "y": 0.1})
-
-root.add_widget(songbox)
-root.add_widget(sheetbox)
 
 class MainApp(App):
 
     def build(self):
+        Window.size = (800, 100)
+        Window.bind(on_request_close=self.on_request_close)
+        root = Background()
+        filelist = ['Chopin Prelude Op. 28 No. 7 MIDI.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav', 'Chopin Prelude Op. 28 No. 7 M. Pollini.wav']
+        self.songbox = SwitcherLayout(filelist, size_hint= (0.3, 0.8),pos_hint={"x":0.0, "y": 0.2})
+
+        root.add_widget(self.songbox)
         return root
+
+    def on_request_close(self, *args):
+        self.songbox.switcher.close()
+        Window.close()
+        return True
 
 if __name__ == '__main__':
     MainApp().run()

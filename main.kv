@@ -1,32 +1,12 @@
 # kv file for rendering interpretation switcher windows
 # Responsible for creating basic GUI that is displayed at all times
-
-<SongboxWidget>:
-    BoxLayout:
-        orientation: "vertical"
-
-<SheetboxWidget>:
-    BoxLayout:
-        orientation: "vertical"
-
-        Image:
-            source:"Chopin Prelude Op. 28 No. 7.png"
-            allow_stretch: True
-            keep_ratio: False
-
-
-<BackgroundWidget>:
+<Background>:
     FloatLayout:
 
         Label:
-            pos_hint:{"x":0.0, "y": 0.0}
+            pos_hint:{"x":0.0, "y": 0.05}
             size_hint:0.15,0.05
-            text: "Interpretation"
-
-        Button:
-            pos_hint:{"x":0.25, "y": 0.0}
-            size_hint:0.05,0.05
-            text: "+"
+            text: "Interpretations"
 
         Widget:
             pos_hint:{"x":0.3, "y": 0.0}
@@ -38,11 +18,6 @@
                     rectangle: (self.x, self.y, self.width, self.height)
 
         Label:
-            pos_hint:{"x":0.3, "y": 0.0}
+            pos_hint:{"x":0.3, "y": 0.05}
             size_hint:0.15,0.05
             text: "Music Sheet"
-
-        Button:
-            pos_hint:{"x":0.95, "y": 0.0}
-            size_hint:0.05,0.05
-            text: "+"

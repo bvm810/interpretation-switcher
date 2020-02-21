@@ -74,14 +74,14 @@ class SwitcherLayout(StackLayout):
     def __init__(self, filelist, **kwargs):
         super().__init__(**kwargs)
         self.switcher = SwitcherWidget(filelist)
-        pause = Button(text = 'Pause', text_size = self.size, size_hint = (0.1, 1))
+        pause = Button(text = 'Pause', text_size = self.size, size_hint = (0.5, 0.5), halign = 'center', valign = 'center')
         pause.on_press = self.switcher.pause
-        play = Button(text = 'Play', text_size = self.size, size_hint = (0.1, 1))
+        play = Button(text = 'Play', text_size = self.size, size_hint = (0.5, 0.5), halign = 'center', valign = 'center')
         play.on_press = self.switcher.play
         self.add_widget(play)
         self.add_widget(pause)
         for player in self.switcher.players:
-            btn = Button(text = str(self.switcher.players.index(player)), size_hint = (0.8/len(self.switcher.players), 1))
+            btn = Button(text = str(self.switcher.players.index(player)), size_hint = (1/len(self.switcher.players), 0.5))
             btn.bind(on_press = partial(self.switcher.switch, self.switcher.players.index(player)))
             self.add_widget(btn)
 
