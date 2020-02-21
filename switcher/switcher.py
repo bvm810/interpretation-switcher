@@ -70,28 +70,32 @@ class SwitcherWidget(Widget):
         for player in self.players:
             player.close()
 
-class TestApp(App):
-    def build(self):
-        self.switcher = SwitcherWidget(['Chopin Prelude Op. 28 No. 7 MIDI.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav', 'Chopin Prelude Op. 28 No. 7 M. Pollini.wav'])
-        Window.bind(on_request_close=self.on_request_close)
-        layout = StackLayout()
-        pause = Button(text = 'Pause', font_size = 24, size_hint = (0.1, 1))
+class SwitcherLayout(StackLayout):
+    def __init__(self, filelist, **kwargs):
+        super().__init__(**kwargs)
+        self.switcher = SwitcherWidget(filelist)
+        pause = Button(text = 'Pause', text_size = self.size, size_hint = (0.1, 1))
         pause.on_press = self.switcher.pause
-        play = Button(text = 'Play', font_size = 24, size_hint = (0.1, 1))
+        play = Button(text = 'Play', text_size = self.size, size_hint = (0.1, 1))
         play.on_press = self.switcher.play
-        layout.add_widget(pause)
-        layout.add_widget(play)
+        self.add_widget(play)
+        self.add_widget(pause)
         for player in self.switcher.players:
-            btn = Button(text = str(self.switcher.players.index(player)), size_hint = (0.8/3, 1))
+            btn = Button(text = str(self.switcher.players.index(player)), size_hint = (0.8/len(self.switcher.players), 1))
             btn.bind(on_press = partial(self.switcher.switch, self.switcher.players.index(player)))
-            layout.add_widget(btn)
-        return layout
+            self.add_widget(btn)
 
-    def on_request_close(self, *args):
-        self.switcher.close()
-        Window.close()
-        return True
-
-if __name__ == '__main__':
-    app = TestApp()
-    app.run()
+# class TestApp(App):
+#     def build(self):
+#         self.switcher_layout = SwitcherLayout(['Chopin Prelude Op. 28 No. 7 MIDI.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav', 'Chopin Prelude Op. 28 No. 7 M. Pollini.wav'])
+#         Window.bind(on_request_close=self.on_request_close)
+#         return self.switcher_layout
+#
+#     def on_request_close(self, *args):
+#         self.switcher_layout.switcher.close()
+#         Window.close()
+#         return True
+#
+# if __name__ == '__main__':
+#     app = TestApp()
+#     app.run()
