@@ -2,10 +2,8 @@ from mido import MidiFile
 from mido import tick2second
 from mido import second2tick
 from midi2audio import FluidSynth
-# Parse Midi and get note, onset in frames, onset in beats, and duration in beats
-# Invert dict to have dict of key = frame and value = note index
-# Create function to draw all notes parsed
 
+# Note class for facilitating midi parsing
 class Note:
     def __init__(self, pitch, start):
         self.pitch = pitch # MIDI note pitch
@@ -13,10 +11,12 @@ class Note:
         self.end = 0
         self.duration = None # Duration in multiple of 1/128th note
 
+# Converting .mid file to .wav to avoid depending on external converters
 def midi2wav(filename):
     fs = FluidSynth()
     fs.midi_to_audio(filename+'.mid', filename+' MIDI.wav')
 
+# Parses .mid to get all notes with its times of beginning and end and duration in beats
 def get_notes(filename):
     mid = MidiFile(filename)
     tempo = 500000
@@ -45,6 +45,7 @@ def get_notes(filename):
 # for note in notes:
 #     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
 
+# Gets active notes for a given frame
 def get_active_notes(notes, frame, hop_size = 2048, fs = 44100):
     start_time = (frame * hop_size)/fs
     end_time = (frame * hop_size + 2 * hop_size)/fs
