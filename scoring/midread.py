@@ -17,12 +17,12 @@ def midi2wav(filename):
     fs = FluidSynth()
     fs.midi_to_audio(filename+'.mid', filename+' MIDI.wav')
 
-def getNotes(filename):
+def get_notes(filename):
     mid = MidiFile(filename)
     tempo = 500000
     elapsed_time = 0 # in seconds
     quarter_note_duration = mid.ticks_per_beat
-    shortest_note = quarter_note_duration/32
+    shortest_note = quarter_note_duration/8
     notes = []
     for track in mid.tracks:
         for msg in track:
@@ -41,6 +41,19 @@ def getNotes(filename):
                         break
     return notes
 
-# notes = getNotes('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/scoring/Chopin Prelude Op. 28 No. 7.mid')
+# notes = get_notes('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/scoring/Chopin Prelude Op. 28 No. 7.mid')
 # for note in notes:
+#     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
+
+def get_active_notes(notes, frame, hop_size = 2048, fs = 44100):
+    start_time = (frame * hop_size)/fs
+    end_time = (frame * hop_size + 2 * hop_size)/fs
+    active_notes = [note for note in notes if (not ((note.end <= start_time) or (note.start >= end_time)))]
+    return active_notes
+
+# notes = get_notes('./Chopin Prelude Op. 28 No. 7.mid')
+# for note in notes:
+#     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
+# active_notes = get_active_notes(notes, 52)
+# for note in active_notes:
 #     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
