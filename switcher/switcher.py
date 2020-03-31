@@ -6,8 +6,8 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from functools import partial
 from kivy.uix.slider import Slider
-from player import PlayerWidget
-from align import align_audios
+from switcher.player import PlayerWidget
+from alignment.align import align_audios
 
 class SwitcherWidget(Widget):
     """

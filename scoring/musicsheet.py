@@ -1,9 +1,9 @@
 # Create songbox widget to be added to main.
 # To do: first version of musical drawing
 
-from midread import Note
-from midread import get_notes
-from midread import get_active_notes
+from scoring.midread import Note
+from scoring.midread import get_notes
+from scoring.midread import get_active_notes
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget

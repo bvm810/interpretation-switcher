@@ -1,6 +1,6 @@
 from librosa.sequence import dtw
-from setup import load_file
-from feature_extraction import chroma
+from alignment.setup import load_file
+from alignment.feature_extraction import chroma
 import numpy as np
 
 def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weights_add = None, weights_mul = None, global_constraints = False, band_rad = 0.25):
