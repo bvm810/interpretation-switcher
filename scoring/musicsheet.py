@@ -1,9 +1,13 @@
 # Create songbox widget to be added to main.
 # To do: first version of musical drawing
 
+# Step 1: Until 07/04 -> Draw stave
+
+
 from scoring.midread import Note
 from scoring.midread import get_notes
 from scoring.midread import get_active_notes
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
@@ -37,12 +41,32 @@ class ScoreWidget(Widget):
     def close(self):
         Clock.unschedule(self.clock)
 
+class MeasureWidget(Widget):
+    """
+    Widget for drawing a measure. Largely based on the work in https://github.com/Syncrossus/Perfect-Melody/blob/master/gui/scorewidget.py
+    """
+
+    # Constants
+    start_line_treble = 30
+    start_line_bass = 130
+    line_separation = 10
+
+class StaveLayout(BoxLayout):
+    """
+    Widget for drawing the stave. Also based on https://github.com/Syncrossus/Perfect-Melody/blob/master/gui/scorewidget.py
+    Is merely a constructor for the layout present in the kv file
+    """
+    pass
+
 class ScoreLayout(FloatLayout):
     def __init__(self, midi, switcher, **kwargs):
         super().__init__(**kwargs)
+        self.orientation = 'horizontal'
         self.score = ScoreWidget(midi, switcher)
-        print_notes = Button(text = 'Print Active Notes !', text_size = self.size, size_hint= (1, 1),pos_hint={"x":0.0, "y": 0.0})
+        stave = StaveLayout(size_hint= (0.75, 1),pos_hint={"x":0.0, "y": 0.0})
+        print_notes = Button(text = 'Print Active Notes !', text_size = self.size, size_hint= (0.25, 1),pos_hint={"x":0.75, "y": 0.0})
         print_notes.on_press = self.print_current_notes
+        self.add_widget(stave)
         self.add_widget(print_notes)
 
     def print_current_notes(self):
