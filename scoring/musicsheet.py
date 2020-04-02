@@ -1,14 +1,13 @@
 # Create songbox widget to be added to main.
 # To do: first version of musical drawing
 
-# Step 1: Until 07/04 -> Draw stave
+# Step 1: Until 09/04 -> Draw notes
 
 
 from scoring.midread import Note
 from scoring.midread import get_notes
 from scoring.midread import get_active_notes
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
@@ -58,16 +57,13 @@ class StaveLayout(BoxLayout):
     """
     pass
 
-class ScoreLayout(FloatLayout):
+class ScoreLayout(BoxLayout):
     def __init__(self, midi, switcher, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
         self.score = ScoreWidget(midi, switcher)
-        stave = StaveLayout(size_hint= (0.75, 1),pos_hint={"x":0.0, "y": 0.0})
-        print_notes = Button(text = 'Print Active Notes !', text_size = self.size, size_hint= (0.25, 1),pos_hint={"x":0.75, "y": 0.0})
-        print_notes.on_press = self.print_current_notes
+        stave = StaveLayout()
         self.add_widget(stave)
-        self.add_widget(print_notes)
 
     def print_current_notes(self):
         for note in self.score.current_notes:

@@ -8,8 +8,6 @@ from kivy.core.window import Window
 from midread import midi2wav
 from scoring.musicsheet import ScoreLayout
 
-Builder.load_file("./main.kv")
-
 class Background(FloatLayout):
     pass
 

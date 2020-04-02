@@ -102,8 +102,6 @@
 
     orientation: 'horizontal'
     padding: 15, 0, 15, 0
-    size_hint: (0.75, 1)
-    pos_hint: {"x":0.75, "y": 0.0}
 
     MeasureWidget:
         size_hint: (0.5, 1)
@@ -118,27 +116,10 @@
             size: 75, 75
             pos: self.parent.x - 20, self.parent.top - (self.parent.start_line_treble + 5 * self.parent.line_separation + self.parent.line_separation/2)
 
-        # Time signature for treble clef. Not very pretty and still not clear how to do without knowing previously the song
-#        Label:
-#            color: (0, 0, 0, 1)
-#            text: "[b]4\n4[/b]"
-#            text_size: 16, None
-#            markup: True
-#            pos: self.parent.x, self.parent.top - (self.parent.start_line_treble + self.parent.line_separation*7)
-
         Image:
             source: './resources/clef_de_fa.png'
             size: 45, 45
             pos: self.parent.x, self.parent.top - (self.parent.start_line_bass + self.parent.line_separation*4)
-
-        # Time signature for bass clef
-#        Label:
-#            color: (0, 0, 0, 1)
-#            text: "[b]4\n4[/b]"
-#            text_size: 8, None
-#            markup: True
-#            pos: self.parent.x + 10, self.parent.top - (self.parent.start_line_bass + self.parent.line_separation*7)
-
 
     MeasureWidget:
         size_hint: (0.5, 1)
