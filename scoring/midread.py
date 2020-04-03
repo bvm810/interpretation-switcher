@@ -2,19 +2,46 @@ from mido import MidiFile
 from mido import tick2second
 from mido import second2tick
 from midi2audio import FluidSynth
+from kivy.uix.widget import Widget
+from kivy.graphics import Color, Ellipse, Line
 
 # Note class for facilitating midi parsing
-class Note:
-    def __init__(self, pitch, start):
+class NoteWidget(Widget):
+
+    # Constants
+    diameter = 10
+    line_width = 1.1
+
+    def __init__(self, pitch, start, **kwargs):
+        super().__init__(**kwargs)
         self.pitch = pitch # MIDI note pitch
         self.start = start # Starting time
         self.end = 0
         self.duration = None # Duration in multiple of 1/128th note
 
+    # Method for drawing a single note
+    def draw_quarter(self, pos_x, pos_y, upper):
+        with self.canvas:
+            Ellipse(pos = (pos_x - self.diameter/2, pos_y - self.diameter/2), size = (self.diameter, self.diameter))
+            if upper == True:
+                Line(pos = (pos_x, pos_y, pos_x, pos_y + 25), width = self.line_width)
+            else:
+                Line(pos = (pos_x, pos_y, pos_x, pos_y - 25), width = self.line_width)
+
+
 # Converting .mid file to .wav to avoid depending on external converters
 def midi2wav(filename):
     fs = FluidSynth()
     fs.midi_to_audio(filename+'.mid', filename+' MIDI.wav')
+
+# Function for converting midinumber to note
+def midi2note(midinumber):
+    notes = {0: 'C', 1: 'C#', 2: 'D', 3: 'D#', 4: 'E', 5: 'F', 6: 'F#', 7: 'G', 8: 'G#', 9: 'A', 10: 'A#', 11: 'B'}
+    octave = str(midinumber // 12)
+    note = notes[midinumber % 12]
+    return note + octave
+
+# print(midi2note(69))
 
 # Parses .mid to get all notes with its times of beginning and end and duration in beats
 def get_notes(filename):
@@ -31,7 +58,7 @@ def get_notes(filename):
             if msg.type == 'set_tempo':
                 tempo = msg.tempo
             if msg.type == 'note_on':
-                notes.append(Note(msg.note, elapsed_time))
+                notes.append(NoteWidget(msg.note, elapsed_time))
             if msg.type == 'note_off':
                 for note in notes:
                     if note.pitch == msg.note and note.duration == None:

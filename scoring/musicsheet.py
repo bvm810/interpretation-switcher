@@ -4,17 +4,19 @@
 # Step 1: Until 09/04 -> Draw notes
 
 
-from scoring.midread import Note
+from scoring.midread import NoteWidget
 from scoring.midread import get_notes
 from scoring.midread import get_active_notes
+from scoring.midread import midi2note
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 
 class ScoreWidget(Widget):
     """
-    Class responsible for parsing midi, writing song score and highliting active notes
+    Class responsible for parsing midi and detecting active notes
     """
     # Initializing
     def __init__(self, midi, switcher, **kwargs):
@@ -43,6 +45,7 @@ class ScoreWidget(Widget):
 class MeasureWidget(Widget):
     """
     Widget for drawing a measure. Largely based on the work in https://github.com/Syncrossus/Perfect-Melody/blob/master/gui/scorewidget.py
+    Should contain all required methods for drawing a measure
     """
 
     # Constants
@@ -58,12 +61,16 @@ class StaveLayout(BoxLayout):
     pass
 
 class ScoreLayout(BoxLayout):
+    """
+    Method for managing which measures are displayed and which notes are highlighted
+    """
     def __init__(self, midi, switcher, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
         self.score = ScoreWidget(midi, switcher)
-        stave = StaveLayout()
-        self.add_widget(stave)
+        self.stave = StaveLayout()
+        self.measures = self.stave.children
+        self.add_widget(self.stave)
 
     def print_current_notes(self):
         for note in self.score.current_notes:
