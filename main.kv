@@ -104,7 +104,7 @@
     padding: 15, 0, 15, 0
 
     MeasureWidget:
-        size_hint: (1, 1)
+        size_hint: (0.5,1)
 
         canvas:
             Line:
@@ -113,11 +113,16 @@
 
         Image:
             source: './resources/clef_de_sol.png'
-            size: 75, 75
-            pos: self.parent.x - 20, self.parent.top - (self.parent.start_line_treble + 5 * self.parent.line_separation + self.parent.line_separation/2)
+            size: 33, 75
+            pos: self.parent.x, self.parent.top - (self.parent.start_line_treble + 5 * self.parent.line_separation + self.parent.line_separation/2)
+            size_hint: None, None
+            allow_stretch: True
+            keep_ratio: False
 
         Image:
             source: './resources/clef_de_fa.png'
             size: 45, 45
             pos: self.parent.x, self.parent.top - (self.parent.start_line_bass + self.parent.line_separation*4)
-
+            size_hint: None, None
+            allow_stretch: True
+            keep_ratio: False

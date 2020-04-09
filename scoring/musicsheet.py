@@ -2,6 +2,8 @@
 # To do: first version of musical drawing
 
 # Step 1: Until 09/04 -> Draw notes
+# Current stage -> Drawing legs for quarters
+# To do -> Highlight notes and position them
 
 
 from scoring.midread import NoteWidget
@@ -42,7 +44,7 @@ class ScoreWidget(Widget):
     def close(self):
         Clock.unschedule(self.clock)
 
-class MeasureWidget(Widget):
+class MeasureWidget(FloatLayout):
     """
     Widget for drawing a measure. Largely based on the work in https://github.com/Syncrossus/Perfect-Melody/blob/master/gui/scorewidget.py
     Should contain all required methods for drawing a measure
@@ -52,6 +54,17 @@ class MeasureWidget(Widget):
     start_line_treble = 30
     start_line_bass = 130
     line_separation = 10
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        note = NoteWidget(0,0)
+        note.pos_x = 750
+        note.pos_y = 100
+        note.upper = True
+        note.draw()
+        note.toggle()
+        self.add_widget(note)
+
 
 class StaveLayout(BoxLayout):
     """
