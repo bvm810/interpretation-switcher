@@ -1,11 +1,10 @@
 # Create songbox widget to be added to main.
 # To do: first version of musical drawing
 
-# Step 1: Until 09/04 -> Draw notes
-# Current stage -> Successfully got y pos
+# Step 1: Until 30/04 -> Draw midi
+# Current stage -> Successfully drawing any note in piano
 # TO DO:
-# 1) Complete supplementary lines when necessary
-# 2) Get x pos
+# 1) Get x pos
 
 
 from scoring.midread import NoteWidget
@@ -14,7 +13,7 @@ from scoring.midread import get_active_notes
 from scoring.midread import midi2note
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.button import Button
+from kivy.graphics import Color, Line
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 
@@ -53,8 +52,8 @@ class MeasureWidget(FloatLayout):
     """
 
     # Constants
-    start_line_treble = 30
-    start_line_bass = 130
+    start_line_treble = 100
+    start_line_bass = 200
     line_separation = 10
     note_letters = 'CDEFGAB'
     bass_octaves = [0, 1, 2, 3]
@@ -63,7 +62,7 @@ class MeasureWidget(FloatLayout):
     # self.top has a bug that defaults it to 100 before displaying the app. Change workaround later
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.display, 6) # Kivy needs to wait opening of widget to use self.top
+        Clock.schedule_once(self.display, 10) # Kivy needs to wait opening of widget to use self.top
 
     # Method for setting note drawing instructions and calling supplementary lines method
     def set_draw_instructions(self, note):
@@ -71,6 +70,7 @@ class MeasureWidget(FloatLayout):
         note.sharp = '#' in note_name
         note.pos_y = self.get_y(note_name)
         note.upper = note.pos_y >= self.third_line
+        self.complete_lines(note)
 
     def display(self, dt):
 
@@ -85,12 +85,16 @@ class MeasureWidget(FloatLayout):
         self.third_line_bass = self.first_line_bass - self.line_separation * 2
         self.fifth_line_bass = self.third_line_bass - self.line_separation * 2
         # Lowest line of bass key minus one octave and one note minus 5 notes -> A0
-        self.lower_note_bass = self.fifth_line_bass - self.line_separation * 4 + self.line_separation * 5
+        self.lower_note_bass = self.fifth_line_bass - (self.line_separation * 4 + self.line_separation * 5)
 
-        note = NoteWidget(70,0)
+        note = NoteWidget(108,0)
         note.pos_x = 750
         self.set_draw_instructions(note)
+        print(self.fifth_line)
+        print(self.lower_note_bass)
+        print(note.pos_y)
         note.draw()
+        note.toggle()
         self.add_widget(note)
 
     # Method for finding y-coord of note. note_string should be given as string in the format of midi2note
@@ -103,17 +107,33 @@ class MeasureWidget(FloatLayout):
         if 0 <= octave and octave <= 3:
             octave_y = self.bass_octaves.index(octave) * len(self.note_letters) * self.line_separation/2
             y = note_y + octave_y + self.lower_note_bass
-            self.set_key(False)
+            self.set_key(treble = False)
         else:
             octave_y = self.treble_octaves.index(octave) * len(self.note_letters) * self.line_separation/2
             y = note_y + octave_y + self.lower_note_treble
-            self.set_key(True)
+            self.set_key(treble = True)
         return y
 
+    # Method for drawing supplementary lines
+    def complete_lines(self, note):
+        if note.pos_y >= self.first_line + self.line_separation:
+            y = self.first_line + self.line_separation
+            while y <= note.pos_y:
+                with self.canvas.after:
+                    Color(0,0,0)
+                    Line(points = [note.pos_x - 10, y, note.pos_x + 10, y], width = note.line_width)
+                y += self.line_separation
+        if note.pos_y <= self.fifth_line - self.line_separation:
+            y = self.fifth_line - self.line_separation
+            while y >= note.pos_y:
+                with self.canvas.after:
+                    Color(0,0,0)
+                    Line(points = [note.pos_x - 10, y, note.pos_x + 10, y], width = note.line_width)
+                y -= self.line_separation
 
     # Method for saving lines for drawing supplementary lines eventually
-    def set_key(self, flag):
-        if flag:
+    def set_key(self, treble):
+        if treble:
             self.first_line = self.first_line_treble
             self.third_line = self.third_line_treble
             self.fifth_line = self.fifth_line_treble

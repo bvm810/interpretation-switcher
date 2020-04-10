@@ -14,7 +14,7 @@ class Background(FloatLayout):
 class MainApp(App):
 
     def build(self):
-        Window.size = (800, 120)
+        Window.size = (800, 210)
         Window.bind(on_request_close=self.on_request_close)
         root = Background() # Adding background
 

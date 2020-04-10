@@ -68,7 +68,7 @@ def midi2wav(filename):
 # Function for converting midinumber to note
 def midi2note(midinumber):
     notes = {0: 'C', 1: 'C#', 2: 'D', 3: 'D#', 4: 'E', 5: 'F', 6: 'F#', 7: 'G', 8: 'G#', 9: 'A', 10: 'A#', 11: 'B'}
-    octave = str(midinumber // 12)
+    octave = str(midinumber // 12 - 1)
     note = notes[midinumber % 12]
     return note + octave
 
