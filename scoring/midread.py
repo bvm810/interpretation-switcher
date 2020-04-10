@@ -42,8 +42,6 @@ class NoteWidget(Widget):
         self.highlight = 1 - self.highlight
         self.draw()
 
-
-
 # Converting .mid file to .wav to avoid depending on external converters
 def midi2wav(filename):
     fs = FluidSynth()
