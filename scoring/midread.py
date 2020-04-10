@@ -20,22 +20,40 @@ class NoteWidget(Widget):
         self.duration = None # Duration in multiple of 1/128th note
         self.pos_x = 0 # x-coord position
         self.pos_y = 0 # y-coord position
-        self.highlight = 0 # flag to show if note is jighlighted or not
+        self.highlight = 0 # flag to show if note is highlighted or not
         self.upper = None # upper or lower part of stave
+        self.sharp = None
 
     # Method for drawing a single note
     def draw(self):
         with self.canvas:
             Color(self.highlight,0,0)
+
+            # Draw note ball
             Ellipse(pos = (self.pos_x-self.diameter/2, self.pos_y-self.diameter/2), size = (self.diameter, self.diameter))
+
+            # Add alteration
+            if self.sharp == True:
+                sharp_x_coord = self.pos_x - self.diameter/2
+                sharp_y_coord = self.pos_y - self.diameter/2
+
+                # Vertical dashes
+                Line(points = [sharp_x_coord - 4, sharp_y_coord - 2, sharp_x_coord - 4, sharp_y_coord + 12], width = self.line_width)
+                Line(points = [sharp_x_coord - 10, sharp_y_coord - 2, sharp_x_coord - 10, sharp_y_coord + 12], width = self.line_width)
+
+                # Horizontal dashes
+                Line(points = [sharp_x_coord - 12, sharp_y_coord + 8, sharp_x_coord - 2, sharp_y_coord + 8], width = self.line_width)
+                Line(points = [sharp_x_coord - 12, sharp_y_coord + 2, sharp_x_coord - 2, sharp_y_coord + 2], width = self.line_width)
+
+            # Add note figure
             if self.upper == True:
-                x_coord = self.pos_x - self.diameter/2
-                y_coord = self.pos_y - self.diameter/2 + self.diameter/2
-                Line(points = [x_coord, y_coord, x_coord, y_coord - 25], width = self.line_width)
+                line_x_coord = self.pos_x - self.diameter/2
+                line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
+                Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord - 25], width = self.line_width)
             else:
-                x_coord = self.pos_x - self.diameter/2 + self.diameter
-                y_coord = self.pos_y - self.diameter/2 + self.diameter/2
-                Line(points = [x_coord, y_coord, x_coord, y_coord + 25], width = self.line_width)
+                line_x_coord = self.pos_x - self.diameter/2 + self.diameter
+                line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
+                Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord + 25], width = self.line_width)
 
     # Method for highlighting a specific note
     def toggle(self):
@@ -54,7 +72,7 @@ def midi2note(midinumber):
     note = notes[midinumber % 12]
     return note + octave
 
-# print(midi2note(69))
+#print(midi2note(70))
 
 # Parses .mid to get all notes with its times of beginning and end and duration in beats
 def get_notes(filename):

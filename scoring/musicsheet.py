@@ -4,9 +4,8 @@
 # Step 1: Until 09/04 -> Draw notes
 # Current stage -> Successfully got y pos
 # TO DO:
-# 1) Add sharps when necessary
-# 2) Complete supplementary lines when necessary
-# 3) Get x pos
+# 1) Complete supplementary lines when necessary
+# 2) Get x pos
 
 
 from scoring.midread import NoteWidget
@@ -64,10 +63,16 @@ class MeasureWidget(FloatLayout):
     # self.top has a bug that defaults it to 100 before displaying the app. Change workaround later
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.display, 5) # Kivy needs to wait opening of widget to use self.top
+        Clock.schedule_once(self.display, 6) # Kivy needs to wait opening of widget to use self.top
 
+    # Method for setting note drawing instructions and calling supplementary lines method
+    def set_draw_instructions(self, note):
+        note_name = midi2note(note.pitch)
+        note.sharp = '#' in note_name
+        note.pos_y = self.get_y(note_name)
+        note.upper = note.pos_y >= self.third_line
 
-    def display(self, dt): #
+    def display(self, dt):
 
         # Constants that depend on self
         self.first_line_treble = self.top - self.start_line_treble
@@ -82,12 +87,9 @@ class MeasureWidget(FloatLayout):
         # Lowest line of bass key minus one octave and one note minus 5 notes -> A0
         self.lower_note_bass = self.fifth_line_bass - self.line_separation * 4 + self.line_separation * 5
 
-        note = NoteWidget(0,0)
+        note = NoteWidget(70,0)
         note.pos_x = 750
-        pos_y = self.get_y('C6')
-        print(pos_y)
-        note.pos_y = pos_y
-        note.upper = True
+        self.set_draw_instructions(note)
         note.draw()
         self.add_widget(note)
 
