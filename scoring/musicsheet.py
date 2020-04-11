@@ -2,9 +2,10 @@
 # To do: first version of musical drawing
 
 # Step 1: Until 30/04 -> Draw midi
-# Current stage -> Successfully drawing any note in piano
-# TO DO:
-# 1) Get x pos
+# Current stage -> First x_pos method version
+# Fix notes with close pos_y
+# Fix distancing
+# Scroll score?
 
 
 from scoring.midread import NoteWidget
@@ -64,14 +65,6 @@ class MeasureWidget(FloatLayout):
         super().__init__(**kwargs)
         Clock.schedule_once(self.display, 10) # Kivy needs to wait opening of widget to use self.top
 
-    # Method for setting note drawing instructions and calling supplementary lines method
-    def set_draw_instructions(self, note):
-        note_name = midi2note(note.pitch)
-        note.sharp = '#' in note_name
-        note.pos_y = self.get_y(note_name)
-        note.upper = note.pos_y >= self.third_line
-        self.complete_lines(note)
-
     def display(self, dt):
 
         # Constants that depend on self
@@ -87,15 +80,32 @@ class MeasureWidget(FloatLayout):
         # Lowest line of bass key minus one octave and one note minus 5 notes -> A0
         self.lower_note_bass = self.fifth_line_bass - (self.line_separation * 4 + self.line_separation * 5)
 
-        note = NoteWidget(108,0)
-        note.pos_x = 750
-        self.set_draw_instructions(note)
-        print(self.fifth_line)
-        print(self.lower_note_bass)
-        print(note.pos_y)
-        note.draw()
-        note.toggle()
-        self.add_widget(note)
+        self.base_x = self.x + self.width * 0.05 # Position for first note
+
+        # Notes for testing
+        notes = [NoteWidget(47, 2), NoteWidget(69, 2), NoteWidget(72, 2), NoteWidget(72, 2.1), NoteWidget(108, 2.5), NoteWidget(21, 2.5)]
+
+        self.first_onset = min([note.start for note in notes]) # Find out first note in measure
+
+        for note in notes:
+            self.set_draw_instructions(note)
+            note.draw()
+            self.add_widget(note)
+
+        # note = NoteWidget(69,0)
+        # note.pos_x = self.x + self.width * 0.05
+        # self.set_draw_instructions(note)
+        # note.draw()
+        # self.add_widget(note)
+
+    # Method for setting note drawing instructions and calling supplementary lines method
+    def set_draw_instructions(self, note):
+        note.pos_x = self.base_x + self.width * (note.start/self.first_onset - 1) # Adjust distance ...
+        note_name = midi2note(note.pitch)
+        note.sharp = '#' in note_name
+        note.pos_y = self.get_y(note_name)
+        note.upper = note.pos_y >= self.third_line
+        self.complete_lines(note)
 
     # Method for finding y-coord of note. note_string should be given as string in the format of midi2note
     def get_y(self, note_string):
