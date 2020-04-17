@@ -9,7 +9,7 @@ from kivy.graphics import Color, Ellipse, Line
 class NoteWidget(Widget):
 
     # Constants
-    diameter = 10
+    diameter = 12
     line_width = 1.3
 
     def __init__(self, pitch, start, **kwargs):
@@ -99,7 +99,7 @@ def get_notes(filename):
                         break
     return notes
 
-# notes = get_notes('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/scoring/Chopin Prelude Op. 28 No. 7.mid')
+# notes = get_notes('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/Chopin Prelude Op. 28 No. 7.mid')
 # for note in notes:
 #     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
 

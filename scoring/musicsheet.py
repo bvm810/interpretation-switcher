@@ -2,10 +2,7 @@
 # To do: first version of musical drawing
 
 # Step 1: Until 30/04 -> Draw midi
-# Current stage -> First x_pos method version
-# Fix notes with close pos_y
-# Fix distancing
-# Scroll score?
+# Current stage -> Working pos_x method with equally spaced notes
 
 
 from scoring.midread import NoteWidget
@@ -53,9 +50,9 @@ class MeasureWidget(FloatLayout):
     """
 
     # Constants
-    start_line_treble = 100
-    start_line_bass = 200
-    line_separation = 10
+    start_line_treble = 150
+    start_line_bass = 270
+    line_separation = 15
     note_letters = 'CDEFGAB'
     bass_octaves = [0, 1, 2, 3]
     treble_octaves = [4, 5, 6, 7, 8]
@@ -80,31 +77,29 @@ class MeasureWidget(FloatLayout):
         # Lowest line of bass key minus one octave and one note minus 5 notes -> A0
         self.lower_note_bass = self.fifth_line_bass - (self.line_separation * 4 + self.line_separation * 5)
 
-        self.base_x = self.x + self.width * 0.05 # Position for first note
+        self.current_x = self.x + self.width * 0.06 # Position for first note
+        self.current_onset = 0
 
         # Notes for testing
-        notes = [NoteWidget(47, 2), NoteWidget(69, 2), NoteWidget(72, 2), NoteWidget(72, 2.1), NoteWidget(108, 2.5), NoteWidget(21, 2.5)]
-
-        self.first_onset = min([note.start for note in notes]) # Find out first note in measure
+        notes = [NoteWidget(47, 2), NoteWidget(72, 2), NoteWidget(74, 2.1), NoteWidget(108, 2.5), NoteWidget(21, 2.5)]
 
         for note in notes:
             self.set_draw_instructions(note)
             note.draw()
             self.add_widget(note)
 
-        # note = NoteWidget(69,0)
-        # note.pos_x = self.x + self.width * 0.05
-        # self.set_draw_instructions(note)
-        # note.draw()
-        # self.add_widget(note)
-
     # Method for setting note drawing instructions and calling supplementary lines method
     def set_draw_instructions(self, note):
-        note.pos_x = self.base_x + self.width * (note.start/self.first_onset - 1) # Adjust distance ...
+        if note.start > self.current_onset: # Equally spaces notes, but only works if receives note list sorted by onset
+            note.pos_x = self.current_x + self.width * 0.03
+            self.current_x = note.pos_x
+            self.current_onset = note.start
+        else:
+            note.pos_x = self.current_x
         note_name = midi2note(note.pitch)
         note.sharp = '#' in note_name
         note.pos_y = self.get_y(note_name)
-        note.upper = note.pos_y >= self.third_line
+        note.upper = note.pos_y > self.third_line
         self.complete_lines(note)
 
     # Method for finding y-coord of note. note_string should be given as string in the format of midi2note
