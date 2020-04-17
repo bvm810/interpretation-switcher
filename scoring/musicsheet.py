@@ -1,8 +1,11 @@
 # Create songbox widget to be added to main.
 # To do: first version of musical drawing
 
-# Step 1: Until 30/04 -> Draw midi
-# Current stage -> Working pos_x method with equally spaced notes
+# Step 1: Until 30/04 -> Working first version
+# Current stage -> Drawing of sheet music working in first version
+# TO DO:
+# 1) Highlight notes while playing
+# 2) Auto-update stave
 
 
 from scoring.midread import NoteWidget
@@ -57,12 +60,7 @@ class MeasureWidget(FloatLayout):
     bass_octaves = [0, 1, 2, 3]
     treble_octaves = [4, 5, 6, 7, 8]
 
-    # self.top has a bug that defaults it to 100 before displaying the app. Change workaround later
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        Clock.schedule_once(self.display, 10) # Kivy needs to wait opening of widget to use self.top
-
-    def display(self, dt):
+    def display(self, notes):
 
         # Constants that depend on self
         self.first_line_treble = self.top - self.start_line_treble
@@ -77,11 +75,8 @@ class MeasureWidget(FloatLayout):
         # Lowest line of bass key minus one octave and one note minus 5 notes -> A0
         self.lower_note_bass = self.fifth_line_bass - (self.line_separation * 4 + self.line_separation * 5)
 
-        self.current_x = self.x + self.width * 0.06 # Position for first note
-        self.current_onset = 0
-
-        # Notes for testing
-        notes = [NoteWidget(47, 2), NoteWidget(72, 2), NoteWidget(74, 2.1), NoteWidget(108, 2.5), NoteWidget(21, 2.5)]
+        self.current_x = self.x + self.width * 0.04 # Position for first note
+        self.current_onset = -1
 
         for note in notes:
             self.set_draw_instructions(note)
@@ -164,17 +159,37 @@ class ScoreLayout(BoxLayout):
     """
     Method for managing which measures are displayed and which notes are highlighted
     """
+
+    # Constants
+    notes_in_screen = 30 # Adjust parameter after testing on several .mid files
+
     def __init__(self, midi, switcher, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
         self.score = ScoreWidget(midi, switcher)
         self.stave = StaveLayout()
-        self.measures = self.stave.children
+        self.measure = self.stave.children[0]
         self.add_widget(self.stave)
+        self.notes_to_display = self.score.notes.copy()
+        Clock.schedule_once(self.display_notes, 10)
 
     def print_current_notes(self):
         for note in self.score.current_notes:
             print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
+
+    # Method for popping out notes needing to be displayed and displaying them
+    def display_notes(self, dt):
+        count = 0
+        notes = []
+        current_onset = -1
+        while (count < self.notes_in_screen) and self.notes_to_display:
+            note = self.notes_to_display.pop(0)
+            notes.append(note)
+            if note.start > current_onset:
+                count +=1
+                current_onset = note.start
+            # print('Pitch: {}, Start Time: {:.2f}, Count: {}'.format(note.pitch, note.start, count)) # Debug
+        self.measure.display(notes)
 
     def close(self):
         self.score.close()

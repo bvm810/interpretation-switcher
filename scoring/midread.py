@@ -45,15 +45,16 @@ class NoteWidget(Widget):
                 Line(points = [sharp_x_coord - 12, sharp_y_coord + 8, sharp_x_coord - 2, sharp_y_coord + 8], width = self.line_width)
                 Line(points = [sharp_x_coord - 12, sharp_y_coord + 2, sharp_x_coord - 2, sharp_y_coord + 2], width = self.line_width)
 
-            # Add note figure
-            if self.upper == True:
-                line_x_coord = self.pos_x - self.diameter/2
-                line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
-                Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord - 25], width = self.line_width)
-            else:
-                line_x_coord = self.pos_x - self.diameter/2 + self.diameter
-                line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
-                Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord + 25], width = self.line_width)
+            # Section for drawing different figure types. Uncomment when dealing with duration problem
+            # # Add note figure
+            # if self.upper == True:
+            #     line_x_coord = self.pos_x - self.diameter/2
+            #     line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
+            #     Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord - 25], width = self.line_width)
+            # else:
+            #     line_x_coord = self.pos_x - self.diameter/2 + self.diameter
+            #     line_y_coord = self.pos_y - self.diameter/2 + self.diameter/2
+            #     Line(points = [line_x_coord, line_y_coord, line_x_coord, line_y_coord + 25], width = self.line_width)
 
     # Method for highlighting a specific note
     def toggle(self):
