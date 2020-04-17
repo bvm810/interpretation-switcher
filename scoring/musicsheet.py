@@ -90,17 +90,22 @@ class MeasureWidget(FloatLayout):
 
     # Method for setting note drawing instructions and calling supplementary lines method
     def set_draw_instructions(self, note):
-        if note.start > self.current_onset: # Equally spaces notes, but only works if receives note list sorted by onset
-            note.pos_x = self.current_x + self.width * 0.03
-            self.current_x = note.pos_x
-            self.current_onset = note.start
-        else:
-            note.pos_x = self.current_x
         note_name = midi2note(note.pitch)
+        note.pos_x = self.get_x(note)
         note.sharp = '#' in note_name
         note.pos_y = self.get_y(note_name)
         note.upper = note.pos_y > self.third_line
         self.complete_lines(note)
+
+    # Method for setting x-coord of note. Assumes notes are sent in onset order and equally spaces them
+    def get_x(self, note):
+        if note.start > self.current_onset:
+            x = self.current_x + self.width * 0.03
+            self.current_x = x
+            self.current_onset = note.start
+        else:
+            x = self.current_x
+        return x
 
     # Method for finding y-coord of note. note_string should be given as string in the format of midi2note
     def get_y(self, note_string):
