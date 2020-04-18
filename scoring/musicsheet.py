@@ -2,10 +2,12 @@
 # To do: first version of musical drawing
 
 # Step 1: Until 30/04 -> Working first version
-# Current stage -> Drawing of sheet music working in first version
+# Current stage -> Toggling notes method not working. Try scrolling line
 # TO DO:
-# 1) Highlight notes while playing
-# 2) Auto-update stave
+# 1) Auto-update stave
+# 2) Adapt position to get x-coord for notes
+# 3) Create method for drawing line
+# 4) Auto-update line
 
 
 from scoring.midread import NoteWidget
@@ -27,6 +29,7 @@ class ScoreWidget(Widget):
         super().__init__(**kwargs)
         self.notes = get_notes(midi) # Midi note parsing
         self.current_notes = [] # List containing active notes. To be updated regularly
+        self.previous_notes = []
         self.switcher = switcher # Corresponding switcher
 
         # Use of Kivy clock to schedule update of current notes
@@ -34,13 +37,29 @@ class ScoreWidget(Widget):
         fs = self.switcher.players[0].file.getframerate() # these two variables to attributes to hop_size and fs
         self.clock = Clock.schedule_interval(self.callback, sample_interval/fs)
 
-    def callback(self, dt): # method for updating current_notes
+    # Method for highlighting notes currently being played
+    def callback(self, dt):
+        self.update_current_notes() # Update current notes
+        self.toggle_notes() # Turn all notes on
+
+    # Method for highlighting active notes
+    def toggle_notes(self):
+        for previous_note in self.previous_notes:
+            if previous_note not in self.current_notes:
+                previous_note.toggle()
+        for current_note in self.current_notes:
+            if current_note not in self.previous_notes:
+                current_note.toggle()
+
+    # Method for updating active notes
+    def update_current_notes(self):
         origin = self.switcher.players.index(self.switcher.currentPlayer) # Check in which audio I am
         origin_frame = self.switcher.currentPlayer.get_frame()
         if origin == 0: # If in MIDI corresponding .wav file, get current frame
             frame = origin_frame
         else: # Else get corresponding frame
             frame = self.switcher.get_corresponding_frame(origin, 0, origin_frame, method = 'avg')
+        self.previous_notes = self.current_notes
         self.current_notes = get_active_notes(self.notes, frame)
 
     def close(self):
