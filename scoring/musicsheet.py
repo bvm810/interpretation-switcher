@@ -4,10 +4,9 @@
 # Step 1: Until 30/04 -> Working first version
 # Current stage -> Toggling notes method not working. Try scrolling line
 # TO DO:
-# 1) Auto-update stave
-# 2) Adapt position to get x-coord for notes
-# 3) Create method for drawing line
-# 4) Auto-update line
+# 1) Adapt position to get x-coord for notes
+# 2) Create method for drawing line
+# 3) Auto-update line
 
 
 from scoring.midread import NoteWidget
@@ -166,6 +165,12 @@ class MeasureWidget(FloatLayout):
             self.third_line = self.third_line_bass
             self.fifth_line = self.fifth_line_bass
 
+    # Method for erasing all notes drawn
+    def erase(self, notes):
+        self.canvas.after.clear()
+        for note in notes:
+            self.remove_widget(note)
+
 
 class StaveLayout(BoxLayout):
     """
@@ -190,14 +195,16 @@ class ScoreLayout(BoxLayout):
         self.measure = self.stave.children[0]
         self.add_widget(self.stave)
         self.notes_to_display = self.score.notes.copy()
-        Clock.schedule_once(self.display_notes, 10)
+        self.displayed_notes = []
+        self.update_clock = None
+        Clock.schedule_once(self.first_display, 10)
 
     def print_current_notes(self):
         for note in self.score.current_notes:
             print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
 
     # Method for popping out notes needing to be displayed and displaying them
-    def display_notes(self, dt):
+    def display_notes(self):
         count = 0
         notes = []
         current_onset = -1
@@ -209,6 +216,18 @@ class ScoreLayout(BoxLayout):
                 current_onset = note.start
             # print('Pitch: {}, Start Time: {:.2f}, Count: {}'.format(note.pitch, note.start, count)) # Debug
         self.measure.display(notes)
+        self.displayed_notes.extend(notes)
+
+    def update_display(self, dt):
+        if not set(self.notes_to_display).isdisjoint(self.score.current_notes):
+            self.measure.erase(self.displayed_notes)
+            self.display_notes()
+
+    def first_display(self, dt):
+        self.display_notes()
+        sample_interval = self.score.switcher.players[0].chunk # In case of parameter customization, think about changing
+        fs = self.score.switcher.players[0].file.getframerate() # these two variables to attributes to hop_size and fs
+        self.update_clock = Clock.schedule_interval(self.update_display, sample_interval/fs)
 
     def close(self):
         self.score.close()
