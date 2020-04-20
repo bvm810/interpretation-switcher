@@ -27,6 +27,8 @@ class SwitcherWidget(Widget):
     # last takes last match
     # avg takes the rounded average of the indexes matching original frame and uses it to get the corresponding frame
     def get_corresponding_frame(self, origin, target, origin_frame, method = 'avg'):
+        if not list(np.where(self.warp_dict[(origin, target)][:,0] == origin_frame)[0]): # If frame after last is given
+            return self.warp_dict[(origin, target)][-1, 1] # return last frame
         if method =='first':
             idx = np.where(self.warp_dict[(origin, target)][:,0] == origin_frame)[0][0]
         elif method =='last':
@@ -69,6 +71,13 @@ class SwitcherWidget(Widget):
     def close(self):
         for player in self.players:
             player.close()
+
+    def is_playing(self):
+        playing = False
+        for player in self.players:
+            if player.is_playing == True:
+                playing = True
+        return playing
 
 class SwitcherLayout(StackLayout):
     def __init__(self, filelist, **kwargs):

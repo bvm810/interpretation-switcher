@@ -8,8 +8,6 @@
 # 2) Create method for drawing line
 # 3) Auto-update line
 
-
-from scoring.midread import NoteWidget
 from scoring.midread import get_notes
 from scoring.midread import get_active_notes
 from scoring.midread import midi2note
@@ -38,11 +36,15 @@ class ScoreWidget(Widget):
 
     # Method for highlighting notes currently being played
     def callback(self, dt):
-        self.update_current_notes() # Update current notes
-        self.toggle_notes() # Turn all notes on
+        if self.switcher.is_playing() == True:
+            self.update_current_notes() # Update current notes
+            for note in self.current_notes:
+                print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
+            print('----------------------///////////----------------------------') # Debug
+            self.highlight_notes() # Turn all notes on
 
     # Method for highlighting active notes
-    def toggle_notes(self):
+    def highlight_notes(self):
         for previous_note in self.previous_notes:
             if previous_note not in self.current_notes:
                 previous_note.toggle()
@@ -186,6 +188,7 @@ class ScoreLayout(BoxLayout):
 
     # Constants
     notes_in_screen = 30 # Adjust parameter after testing on several .mid files
+    correction = 15 # Amount of notes to disconsider when updating stave
 
     def __init__(self, midi, switcher, **kwargs):
         super().__init__(**kwargs)
@@ -194,33 +197,42 @@ class ScoreLayout(BoxLayout):
         self.stave = StaveLayout()
         self.measure = self.stave.children[0]
         self.add_widget(self.stave)
-        self.notes_to_display = self.score.notes.copy()
-        self.displayed_notes = []
+        self.notes_being_displayed = []
+        self.notes_to_display = []
+        self.note_index = 0
         self.update_clock = None
         Clock.schedule_once(self.first_display, 10)
 
-    def print_current_notes(self):
-        for note in self.score.current_notes:
-            print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
 
-    # Method for popping out notes needing to be displayed and displaying them
+    # Method for displaying the notes that are going to be played
     def display_notes(self):
-        count = 0
+        notes = self.get_notes_to_display()
+        self.measure.display(notes)
+        self.notes_being_displayed = notes
+
+    # Method for getting notes to be displayed
+    def get_notes_to_display(self):
+        space_count = 0 # variable for counting how many spaces were used
+        prev_idx = self.note_index-self.correction # Variable to store where previous score frame was with a correction to disconsider transition notes
         notes = []
         current_onset = -1
-        while (count < self.notes_in_screen) and self.notes_to_display:
-            note = self.notes_to_display.pop(0)
+        while (space_count < self.notes_in_screen) and (self.note_index < len(self.score.notes)):
+            note = self.score.notes[self.note_index]
             notes.append(note)
             if note.start > current_onset:
-                count +=1
+                space_count +=1
                 current_onset = note.start
-            # print('Pitch: {}, Start Time: {:.2f}, Count: {}'.format(note.pitch, note.start, count)) # Debug
-        self.measure.display(notes)
-        self.displayed_notes.extend(notes)
+            self.note_index += 1
+        if self.note_index == len(self.score.notes): # If song has finished set the counter to zero
+            self.note_index = 0
+            self.notes_to_display = self.score.notes[:prev_idx] # and determine first notes as the ones to show
+        else:
+            self.notes_to_display = self.score.notes[self.note_index:] # If the song is going on, use next notes as notes to display
+        return notes
 
     def update_display(self, dt):
         if not set(self.notes_to_display).isdisjoint(self.score.current_notes):
-            self.measure.erase(self.displayed_notes)
+            self.measure.erase(self.notes_being_displayed)
             self.display_notes()
 
     def first_display(self, dt):
@@ -231,3 +243,4 @@ class ScoreLayout(BoxLayout):
 
     def close(self):
         self.score.close()
+        Clock.unschedule(self.update_clock)

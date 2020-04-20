@@ -65,7 +65,7 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
 def warp(filename1, filename2):
     """
     Function for obtaining warping path based only on filenames
-    OBS: Still does not support hange in parameters for chroma and dtw_align
+    OBS: Still does not support change in parameters for chroma and dtw_align
     :param filename1: filename of first audio
     :param filename2: filename of second audio
     :return wp: warping path
