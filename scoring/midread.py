@@ -7,22 +7,27 @@ from kivy.graphics import Color, Ellipse, Line
 
 # Note class for facilitating midi parsing
 class NoteWidget(Widget):
+    """
+    This class is a widget for the representation of each note. It can toggle notes active or not and draw them, but
+    it needs certain information to be filled by other classes. It is supposed to hold all information for a note,
+    including its figure.
+    """
 
     # Constants
-    diameter = 12
-    line_width = 1.3
+    diameter = 12 # Note ball diameter
+    line_width = 1.3 # Note leg width
 
     def __init__(self, pitch, start, **kwargs):
         super().__init__(**kwargs)
         self.pitch = pitch # MIDI note pitch
         self.start = start # Starting time
-        self.end = 0
+        self.end = 0 # End time
         self.duration = None # Duration in multiple of 1/128th note
         self.pos_x = 0 # x-coord position
         self.pos_y = 0 # y-coord position
         self.highlight = 0 # flag to show if note is highlighted or not
         self.upper = None # upper or lower part of stave
-        self.sharp = None
+        self.sharp = None # alteration with sharp
 
     # Method for drawing a single note
     def draw(self):
@@ -63,13 +68,17 @@ class NoteWidget(Widget):
 
 # Converting .mid file to .wav to avoid depending on external converters
 def midi2wav(filename):
-    fs = FluidSynth()
-    fs.midi_to_audio(filename+'.mid', filename+' MIDI.wav')
+    """
+    Calls FluidSynth Midi synthesizer to generate .wav from midi. Attention to library to use
+    :param filename: string with filepath for midi without extension
+    """
+    fs = FluidSynth() # Calls FluidSynth
+    fs.midi_to_audio(filename+'.mid', filename+' MIDI.wav') # Uses it directly
 
 # Function for converting midinumber to note
 def midi2note(midinumber):
     notes = {0: 'C', 1: 'C#', 2: 'D', 3: 'D#', 4: 'E', 5: 'F', 6: 'F#', 7: 'G', 8: 'G#', 9: 'A', 10: 'A#', 11: 'B'}
-    octave = str(midinumber // 12 - 1)
+    octave = str(midinumber // 12 - 1) # Considering midinumber 0 as C-1
     note = notes[midinumber % 12]
     return note + octave
 

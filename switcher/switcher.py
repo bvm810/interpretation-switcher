@@ -72,6 +72,7 @@ class SwitcherWidget(Widget):
         for player in self.players:
             player.close()
 
+    # Method for finding out if there is still one of the players going on
     def is_playing(self):
         playing = False
         for player in self.players:
