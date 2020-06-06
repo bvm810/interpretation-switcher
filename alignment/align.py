@@ -3,7 +3,7 @@ from alignment.setup import load_file
 from alignment.feature_extraction import chroma
 import numpy as np
 
-def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weights_add = None, weights_mul = None, global_constraints = False, band_rad = 0.25):
+def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weights_add = None, weights_mul = None, global_constraints = False, band_rad = 0.0008):
     """
     Function for aligning using DTW implementation by librosa. All arguments are the same except step_sizes and weights
     The length of those three parameters must be the same, otherwise librosa will raise an error.
@@ -20,7 +20,7 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
         weights_add = np.asarray([0, 0, 0])
 
     if weights_mul is None:
-        weights_mul = np.asarray([1, 1, 1])
+        weights_mul = np.asarray([1, 3, 3])
 
     D, wp = dtw(X = audio1,
                 Y = audio2,
@@ -39,8 +39,8 @@ def dtw_align(audio1, audio2, metric = 'cosine', step_sizes_sigma = None, weight
 # from feature_extraction import chroma
 #
 #
-# x, fs_x = load_file('Chopin Prelude Op. 28 No. 7 N. Freire.wav')
-# y, fs_y = load_file('Chopin Prelude Op. 28 No. 7 MIDI.wav')
+# x, fs_x = load_file('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/Chopin Prelude Op. 28 No. 7 N. Freire.wav')
+# y, fs_y = load_file('/Users/bernardo/Documents/Projetos em Andamento/Projet Long S7+S8/interpretation-switcher/Chopin Prelude Op. 28 No. 7 MIDI.wav')
 #
 # if (fs_x != fs_y):
 #     print("Error: .wav files do not have the same sampling frequency")
