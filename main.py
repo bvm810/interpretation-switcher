@@ -18,10 +18,10 @@ class MainApp(App):
         Window.bind(on_request_close=self.on_request_close)
         root = Background() # Adding background
 
-        midi_file = 'Chopin Prelude Op. 28 No. 7'  # Midi filename
+        midi_file = 'Chopin Prelude Op. 28 No. 4'  # Midi filename
         midi2wav(midi_file) # Converting midi to wave
 
-        filelist = [midi_file + ' MIDI.wav', 'Chopin Prelude Op. 28 No. 7 N. Freire.wav', 'Chopin Prelude Op. 28 No. 7 M. Pollini.wav']
+        filelist = [midi_file + ' MIDI.wav', 'Chopin Prelude Op. 28 No. 4 N. Freire.wav', 'Chopin Prelude Op. 28 No. 4 M. Pollini.wav']
         self.songbox = SwitcherLayout(filelist, size_hint= (0.3, 0.8),pos_hint={"x":0.0, "y": 0.2}) # switcher
         self.sheetbox = ScoreLayout(midi_file + '.mid', self.songbox.switcher, size_hint= (0.7, 0.8),pos_hint={"x":0.3, "y": 0.2})
 

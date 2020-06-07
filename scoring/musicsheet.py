@@ -1,13 +1,3 @@
-# Create songbox widget to be added to main.
-# To do: first version of musical drawing
-
-# Step 1: Until 30/04 -> Working first version
-# Current stage -> Toggling notes method not working. Try scrolling line
-# TO DO:
-# 1) Adapt position to get x-coord for notes
-# 2) Create method for drawing line
-# 3) Auto-update line
-
 from scoring.midread import get_notes
 from scoring.midread import get_active_notes
 from scoring.midread import midi2note
@@ -42,9 +32,9 @@ class ScoreWidget(Widget):
         """
         if self.switcher.is_playing() == True:
             self.update_current_notes() # Update current notes
-            for note in self.current_notes:
-                print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
-            print('----------------------///////////----------------------------') # Debug
+            # for note in self.current_notes:
+            #     print('Pitch: {}, Start Time: {:.2f}, End Time: {:.2f}, Duration: {}'.format(note.pitch, note.start, note.end, note.duration))
+            # print('----------------------///////////----------------------------') # Debug
             self.highlight_notes() # Turn all notes on
 
     # Method for highlighting active notes
@@ -232,7 +222,7 @@ class ScoreLayout(BoxLayout):
         self.notes_to_display = [] # Notes that need to be displayed from next "page" onward
         self.note_index = 0 # Which note was the last one drawn
         self.update_clock = None # callback Kivy clock. Initialized later.
-        Clock.schedule_once(self.first_display, 10) # Wait to draw notes for the first time due to use of relative positions
+        Clock.schedule_once(self.first_display, 30) # Wait to draw notes for the first time due to use of relative positions
 
 
     # Method for displaying the notes that are going to be played
