@@ -5,7 +5,7 @@ from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
 from switcher.switcher import SwitcherLayout
 from kivy.core.window import Window
-from midread import midi2wav
+from scoring.midread import midi2wav
 from scoring.musicsheet import ScoreLayout
 
 class Background(FloatLayout):
